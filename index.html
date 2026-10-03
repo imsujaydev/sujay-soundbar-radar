@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🔊 Sujay's Soundbar Radar</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#151a2d;--muted:#667085;--blue:#2874f0;--green:#0a8f5b;--orange:#f59e0b;--red:#e53935;--line:#e5e7eb}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(135deg,#172554,#2563eb);color:white;padding:26px 18px 22px;position:sticky;top:0;z-index:5;box-shadow:0 4px 18px #0002}
+.wrap{max-width:1280px;margin:auto} .top{display:flex;justify-content:space-between;gap:16px;align-items:center}
+h1{margin:0;font-size:28px} .sub{opacity:.88;margin-top:6px;font-size:14px}
+.updated{background:#ffffff20;border:1px solid #ffffff35;border-radius:12px;padding:10px 13px;font-size:12px;white-space:nowrap}
+.toolbar{background:white;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:108px;z-index:4}
+.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center} input,select,button{border:1px solid #d6d9e0;border-radius:10px;padding:10px 12px;background:white;color:var(--ink);font:inherit} input{min-width:220px;flex:1} button{cursor:pointer} button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+main{padding:22px 18px 50px} .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:15px} .stat b{display:block;font-size:22px} .stat span{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 3px 14px #1018280b;position:relative;display:flex;flex-direction:column}
+.rank{position:absolute;left:12px;top:12px;background:#111827dd;color:white;padding:5px 9px;border-radius:9px;font-weight:800;font-size:12px;z-index:2}
+.pic{height:205px;background:#f8fafc;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--line)} .pic img{width:100%;height:100%;object-fit:contain;padding:12px} .fallback{display:none;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#111827,#374151);color:white;font-weight:800;font-size:25px} .fallback span{font-size:12px;font-weight:500;opacity:.8;margin-top:5px;text-align:center;padding:0 15px}
+.body{padding:16px} .brand{font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.05em} h2{font-size:20px;margin:4px 0 9px}
+.badge{display:inline-block;padding:5px 8px;border-radius:8px;font-size:11px;font-weight:800;margin-bottom:10px} .hot{background:#dcfce7;color:#166534} .wait{background:#fef3c7;color:#92400e} .alert{background:#fee2e2;color:#991b1b} .movie{background:#ede9fe;color:#5b21b6} .brand{} .good{background:#e0f2fe;color:#075985} .warn{background:#ffedd5;color:#9a3412}
+.rating{font-size:13px;margin-bottom:8px} .rating span{color:var(--muted);margin-left:6px} .price{font-size:25px;font-weight:900} .target{font-size:12px;color:var(--muted);margin:2px 0 10px}
+.meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px} .meta span,.spec{font-size:11px;background:#f1f5f9;padding:6px 8px;border-radius:7px;color:#475569} .spec{background:#eef4ff;color:#1d4ed8;margin-top:9px}
+p{font-size:13px;line-height:1.5;color:#475569;min-height:58px;margin:8px 0} .btn{display:block;text-align:center;text-decoration:none;background:#ffb300;color:#111827;font-weight:800;padding:11px;border-radius:9px;margin-top:12px}
+.note{background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:13px 15px;margin:18px 0;color:#7c2d12;font-size:13px}
+footer{max-width:1280px;margin:0 auto;padding:0 18px 35px;color:#667085;font-size:12px;line-height:1.5}
+@media(max-width:700px){.summary{grid-template-columns:repeat(2,1fr)} .top{align-items:flex-start;flex-direction:column} .updated{width:100%} header{position:relative} .toolbar{top:0;position:sticky}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap top">
+<div><h1>🔊 Sujay's Soundbar Radar</h1><div class="sub">Established brands • serious soundbars/home theatres • ₹6,500 primary ceiling</div></div>
+<div class="updated">Last research refresh: <b>3 Oct 2026</b><br>Retailer prices can change live.</div>
+</div>
+</header>
+<div class="toolbar"><div class="wrap controls">
+<input id="search" placeholder="Search model or brand…">
+<select id="brand"><option value="">All brands</option><option>Motorola</option><option>boAt</option><option>GOVO</option><option>Mivi</option><option>Philips</option><option>Zebronics</option><option>Sony</option></select>
+<select id="setup"><option value="">All setups</option><option>2.1</option><option>5.1</option></select>
+<select id="price"><option value="">Any price</option><option value="6500">≤ ₹6,500</option><option value="5500">≤ ₹5,500</option><option value="4500">≤ ₹4,500</option></select>
+<button class="primary" onclick="resetFilters()">Reset</button>
+</div></div>
+<main class="wrap">
+<div class="summary">
+<div class="stat"><b>13</b><span>serious candidates</span></div>
+<div class="stat"><b>₹6,500</b><span>primary ceiling</span></div>
+<div class="stat"><b>₹4,299</b><span>lowest active tracked price</span></div>
+<div class="stat"><b>3</b><span>sale-sniper brands: Sony / Samsung / JBL</span></div>
+</div>
+<div class="note"><b>⚡ Live-price limitation:</b> this dashboard stores the latest verified research and links directly to retailer listings. Retailers do not expose a dependable public live-price API to this page, so the <b>“Check live listing”</b> button is the source of truth for the current checkout price. I can refresh the dashboard data and replace this file when the radar is updated.</div>
+<section class="grid" id="grid">
+    <article class="card" data-brand="Motorola" data-setup="2.1" data-price="4299">
+      <div class="rank">#1</div>
+      <div class="pic"><img src="https://rukmini1.flixcart.com/image/1500/1500/ku4ezrk0/speaker/soundbar/x/g/s/amphisoundx-motorola-original-imag7b6meddjy3we.jpeg?q=90" alt="Motorola AmphiSoundX Vibe 160W" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Motorola<span>AmphiSoundX Vibe 160W</span></div></div>
+      <div class="body">
+        <div class="brand">Motorola</div>
+        <h2>AmphiSoundX Vibe 160W</h2>
+        <span class="badge hot">🔥 ACTIVE</span>
+        <div class="rating"><b>4.2 ★</b> <span>13K+ ratings</span></div>
+        <div class="price">₹4,299</div>
+        <div class="target">🎯 Target: ₹4,500</div>
+        <div class="meta"><span>2.1</span><span>Dedicated subwoofer</span></div>
+        <p>Excellent budget price and a very large owner base. Service/remote availability remains the main caution.</p>
+        <div class="spec">160W RMS • Bluetooth • HDMI ARC</div>
+        <a class="btn" href="https://www.flipkart.com/motorola-amphisoundx-hdmi-arc-160-w-bluetooth-soundbar/p/itm6919046939bbd" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Motorola" data-setup="2.1" data-price="4799">
+      <div class="rank">#2</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/q/e/9/-original-imahm7jm4qftqhcf.jpeg?q=20" alt="Motorola AmphiSoundX Vibe 220W" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Motorola<span>AmphiSoundX Vibe 220W</span></div></div>
+      <div class="body">
+        <div class="brand">Motorola</div>
+        <h2>AmphiSoundX Vibe 220W</h2>
+        <span class="badge hot">🔥 ACTIVE</span>
+        <div class="rating"><b>4.2 ★</b> <span>14K+ ratings</span></div>
+        <div class="price">₹4,799</div>
+        <div class="target">🎯 Target: ₹5,000</div>
+        <div class="meta"><span>2.1</span><span>Dedicated subwoofer</span></div>
+        <p>One of the most interesting current Motorola price points; strong owner volume.</p>
+        <div class="spec">220W RMS • Bluetooth • 2.1</div>
+        <a class="btn" href="https://www.flipkart.com/motorola-amphisoundx-vibe-220-w-bluetooth-soundbar/p/itme8b88ccbd7fd8" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Motorola" data-setup="5.1" data-price="5599">
+      <div class="rank">#3</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/2/2/0/-original-imahm7jqyrtj9zhx.jpeg?q=20" alt="Motorola AmphiSoundX Vibe 330W" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Motorola<span>AmphiSoundX Vibe 330W</span></div></div>
+      <div class="body">
+        <div class="brand">Motorola</div>
+        <h2>AmphiSoundX Vibe 330W</h2>
+        <span class="badge movie">🎬 MOVIE WATCH</span>
+        <div class="rating"><b>4.1 ★</b> <span>3.5K+ ratings</span></div>
+        <div class="price">₹5,599</div>
+        <div class="target">🎯 Target: ₹5,300</div>
+        <div class="meta"><span>5.1</span><span>Subwoofer + 2 satellites</span></div>
+        <p>True 5.1 hardware under ₹6k. More interesting for movies than a simple 2.1 bar.</p>
+        <div class="spec">330W RMS • Bluetooth 5.3 • 5.1</div>
+        <a class="btn" href="https://www.flipkart.com/motorola-amphisoundx-vibe-330-w-bluetooth-soundbar/p/itm4189baab23a23" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="boAt" data-setup="2.1" data-price="6299">
+      <div class="rank">#4</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/y/5/f/-original-imahcy9kgmvw59gh.jpeg?q=20" alt="boAt Aavante 1550 Plus" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">boAt<span>Aavante 1550 Plus</span></div></div>
+      <div class="body">
+        <div class="brand">boAt</div>
+        <h2>Aavante 1550 Plus</h2>
+        <span class="badge wait">🎯 WAIT</span>
+        <div class="rating"><b>4.4 ★</b> <span>58K+ ratings</span></div>
+        <div class="price">₹6,299</div>
+        <div class="target">🎯 Target: ₹5,300</div>
+        <div class="meta"><span>2.1</span><span>6.5-inch wired subwoofer</span></div>
+        <p>One of our key targets. Historical ₹4–5k territory makes today&#x27;s price hard to justify.</p>
+        <div class="spec">160W RMS • HDMI ARC • Optical • USB • EQ modes</div>
+        <a class="btn" href="https://www.flipkart.com/flipkart/p/itmf0277b0f7ac2d" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="boAt" data-setup="2.1" data-price="5899">
+      <div class="rank">#5</div>
+      <div class="pic"><img src="https://www.boat-lifestyle.com/cdn/shop/products/Artboard_1-removebg-preview_500x.png?v=1682071777" alt="boAt Aavante Bar 1550 Pro" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">boAt<span>Aavante Bar 1550 Pro</span></div></div>
+      <div class="body">
+        <div class="brand">boAt</div>
+        <h2>Aavante Bar 1550 Pro</h2>
+        <span class="badge alert">🚨 RESTOCK</span>
+        <div class="rating"><b>5.0 ★</b> <span>7 official reviews</span></div>
+        <div class="price">₹5,899</div>
+        <div class="target">🎯 Target: ₹5,000</div>
+        <div class="meta"><span>2.1</span><span>6.5-inch wired subwoofer</span></div>
+        <p>Official boAt page shows ₹5,899 but sold out/restocking soon. Keep watching for the historical ₹4–5k zone.</p>
+        <div class="spec">160W RMS • HDMI ARC • Optical • USB • Bluetooth 5.3</div>
+        <a class="btn" href="https://www.boat-lifestyle.com/products/aavante-bar-1550-pro-2-1-channel-soundbar" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="GOVO" data-setup="2.1" data-price="4999">
+      <div class="rank">#6</div>
+      <div class="pic"><img src="https://pricehistoryapp.com/_next/image?q=75&url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F51TEhp-YXzL.jpg&w=3840" alt="GOVO GoSurround 900" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">GOVO<span>GoSurround 900</span></div></div>
+      <div class="body">
+        <div class="brand">GOVO</div>
+        <h2>GoSurround 900</h2>
+        <span class="badge hot">🔥 VALUE</span>
+        <div class="rating"><b>4.4 ★</b> <span>19.8K+ ratings</span></div>
+        <div class="price">₹4,999</div>
+        <div class="target">🎯 Target: ₹4,500</div>
+        <div class="meta"><span>2.1</span><span>6.5-inch wired subwoofer</span></div>
+        <p>A strong bass/value benchmark with a very large owner base and current Big Billion Days pricing.</p>
+        <div class="spec">200W • 2.1 • HDMI ARC • AUX • USB • Bluetooth</div>
+        <a class="btn" href="https://www.flipkart.com/govo-gosurround-900-2-1-channel-6-5-wired-subwoofer-200-w-bluetooth-soundbar/p/itm441a0192c21f8" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Mivi" data-setup="5.1" data-price="6174">
+      <div class="rank">#7</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/b/0/o/-original-imahrfg2ddwfwwh6.jpeg?q=20" alt="Mivi Fort H350" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Mivi<span>Fort H350</span></div></div>
+      <div class="body">
+        <div class="brand">Mivi</div>
+        <h2>Fort H350</h2>
+        <span class="badge good">🟢 WATCH</span>
+        <div class="rating"><b>4.2 ★</b> <span>24.7K+ ratings</span></div>
+        <div class="price">₹6,174</div>
+        <div class="target">🎯 Target: ₹5,800</div>
+        <div class="meta"><span>5.1</span><span>Subwoofer + rear satellites</span></div>
+        <p>Large owner base and genuine 5.1 setup. Worth comparing against Motorola 330W.</p>
+        <div class="spec">350W • 5.1 • EQ modes • Bluetooth 5.1</div>
+        <a class="btn" href="https://www.flipkart.com/mivi-fort-h350-soundbar-350-watts-5-1-channel-multi-input-eq-modes-bt-v5-1-w-bluetooth-soundbar/p/itm38449f86ec63f" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Philips" data-setup="2.1" data-price="4799">
+      <div class="rank">#8</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/b/v/v/-original-imahnr7eryh55kny.jpeg?q=20" alt="Philips TAB4361/94" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Philips<span>TAB4361/94</span></div></div>
+      <div class="body">
+        <div class="brand">Philips</div>
+        <h2>TAB4361/94</h2>
+        <span class="badge brand">🔥 BRAND PICK</span>
+        <div class="rating"><b>4.2 ★</b> <span>132 ratings</span></div>
+        <div class="price">₹4,799</div>
+        <div class="target">🎯 Target: ₹5,500</div>
+        <div class="meta"><span>2.1</span><span>5.5-inch wired subwoofer</span></div>
+        <p>Established brand, HDMI ARC/optical and 1-year manufacturer warranty. Today&#x27;s sale price is notably attractive.</p>
+        <div class="spec">160W RMS • HDMI ARC • Optical • USB • 4 modes</div>
+        <a class="btn" href="https://www.flipkart.com/philips-tab4361-94-5-5-inch-subwoofer-hdmi-arc-usb-optical-connectivity-160-w-bluetooth-soundbar/p/itm2fb8885e02a6a" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Philips" data-setup="2.1" data-price="6499">
+      <div class="rank">#9</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/q/d/9/-original-imahjv4hxztxvgjs.jpeg?q=20" alt="Philips TAB5321/94" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Philips<span>TAB5321/94</span></div></div>
+      <div class="body">
+        <div class="brand">Philips</div>
+        <h2>TAB5321/94</h2>
+        <span class="badge warn">⚠️ REVIEW CHECK</span>
+        <div class="rating"><b>3.8 ★</b> <span>61 ratings</span></div>
+        <div class="price">₹6,499</div>
+        <div class="target">🎯 Target: ₹6,200</div>
+        <div class="meta"><span>2.1</span><span>5.5-inch subwoofer</span></div>
+        <p>200W + Dolby Digital at the ceiling. Current owner rating is weaker, so sound-quality evidence matters before buying.</p>
+        <div class="spec">200W • Dolby Digital • 2.1 • Bluetooth</div>
+        <a class="btn" href="https://www.flipkart.com/philips-tab5321-94-dolby-digital-200-w-bluetooth-soundbar/p/itmc1fe965ad9eef" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Philips" data-setup="2.1" data-price="6999">
+      <div class="rank">#10</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/i/2/j/-original-imahgxmgrkdcfhg4.jpeg?q=20" alt="Philips TAB4230/94" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Philips<span>TAB4230/94</span></div></div>
+      <div class="body">
+        <div class="brand">Philips</div>
+        <h2>TAB4230/94</h2>
+        <span class="badge hot">🔥 NEAR TARGET</span>
+        <div class="rating"><b>4.1 ★</b> <span>693 ratings</span></div>
+        <div class="price">₹6,999</div>
+        <div class="target">🎯 Target: ₹6,500</div>
+        <div class="meta"><span>2.1</span><span>6-inch subwoofer</span></div>
+        <p>300W + Dolby Digital + 6-inch sub. Current bank offer can bring it close to the ceiling.</p>
+        <div class="spec">300W • Dolby Digital • 2.1 • Bluetooth</div>
+        <a class="btn" href="https://www.flipkart.com/philips-tab4230-94-dolby-digital-320-w-bluetooth-soundbar/p/itmaf22ac264c5a5" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Zebronics" data-setup="2.1" data-price="5889">
+      <div class="rank">#11</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/soundbar/t/k/i/zeb-juke-bar-4100-zebronics-original-imahhqggahqkzfzv.jpeg?q=20" alt="Zebronics Juke Bar 4100" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Zebronics<span>Juke Bar 4100</span></div></div>
+      <div class="body">
+        <div class="brand">Zebronics</div>
+        <h2>Juke Bar 4100</h2>
+        <span class="badge wait">🟡 WAIT</span>
+        <div class="rating"><b>4.3 ★</b> <span>1.4K+ ratings</span></div>
+        <div class="price">₹5,889</div>
+        <div class="target">🎯 Target: ₹5,500</div>
+        <div class="meta"><span>2.1</span><span>Dedicated subwoofer</span></div>
+        <p>200W, HDMI ARC and a substantial owner base. Keep below ₹5.5k because service history needs consideration.</p>
+        <div class="spec">200W • HDMI ARC • USB • AUX • Bluetooth</div>
+        <a class="btn" href="https://www.flipkart.com/zebronics-zeb-juke-bar-4100-200-w-bluetooth-soundbar/p/itma6b2cab3025cf" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Motorola" data-setup="2.1" data-price="7599">
+      <div class="rank">#12</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/ku2zjww0/speaker/soundbar/l/k/q/amphisoundx-dolby-motorola-original-imag7a234w4xhfhg.jpeg?q=20" alt="Motorola AmphiSoundX Dolby 160W" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Motorola<span>AmphiSoundX Dolby 160W</span></div></div>
+      <div class="body">
+        <div class="brand">Motorola</div>
+        <h2>AmphiSoundX Dolby 160W</h2>
+        <span class="badge alert">🚨 SALE SNIPER</span>
+        <div class="rating"><b>4.2 ★</b> <span>1.6K+ ratings</span></div>
+        <div class="price">₹7,599</div>
+        <div class="target">🎯 Target: ₹6,500</div>
+        <div class="meta"><span>2.1</span><span>Dedicated subwoofer</span></div>
+        <p>Keep it even though currently over budget. ₹6,500 or less would make it worth serious comparison.</p>
+        <div class="spec">160W • Dolby • HDMI ARC • Bluetooth</div>
+        <a class="btn" href="https://www.flipkart.com/motorola-mt160-5-sb21-160-w-bluetooth-soundbar/p/itmd74a2f3995055" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article>
+    <article class="card" data-brand="Sony" data-setup="5.1" data-price="15190">
+      <div class="rank">#13</div>
+      <div class="pic"><img src="https://rukminim2.flixcart.com/image/480/640/xif0q/speaker/s/4/6/-original-imagz6kn77uzz9t3.jpeg?q=20" alt="Sony HT-S20R" loading="lazy" onerror="this.parentElement.classList.add('broken'); this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex'"><div class="fallback">Sony<span>HT-S20R</span></div></div>
+      <div class="body">
+        <div class="brand">Sony</div>
+        <h2>HT-S20R</h2>
+        <span class="badge alert">🚨 DREAM SALE</span>
+        <div class="rating"><b>4.5 ★</b> <span>22K+ ratings</span></div>
+        <div class="price">₹15,190</div>
+        <div class="target">🎯 Target: ₹7,000</div>
+        <div class="meta"><span>5.1</span><span>Subwoofer + rear speakers</span></div>
+        <p>Genuine Sony 5.1 system. Far above budget today, but retained for a major clearance/festival drop.</p>
+        <div class="spec">400W • Dolby Digital • 5.1 • HDMI ARC • Optical</div>
+        <a class="btn" href="https://www.flipkart.com/sony-ht-s20r-dolby-digital-400-w-bluetooth-soundbar/p/itm494672c74e759" target="_blank" rel="noopener">Check live listing ↗</a>
+      </div>
+    </article></section>
+</main>
+<footer>
+<b>Radar rules:</b> sound quality/balance → bass depth/impact → subwoofer quality → review consistency → reliability/service → connectivity → price/value. Wattage is supporting evidence only. Motorola remains under extra scrutiny for remote/spare-parts/service risk. Strong branded products can remain on the radar even when temporarily over budget. Amazon + Flipkart + official-brand evidence is preferred.
+</footer>
+<script>
+const cards=[...document.querySelectorAll('.card')];
+function filter(){
+ const q=document.querySelector('#search').value.toLowerCase(), b=document.querySelector('#brand').value, s=document.querySelector('#setup').value, p=Number(document.querySelector('#price').value||999999);
+ cards.forEach(c=>{
+   const text=c.innerText.toLowerCase(), ok=(!q||text.includes(q))&&(!b||c.dataset.brand===b)&&(!s||c.dataset.setup===s)&&Number(c.dataset.price)<=p;
+   c.style.display=ok?'flex':'none';
+ });
+}
+document.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',filter));
+function resetFilters(){document.querySelector('#search').value='';document.querySelector('#brand').value='';document.querySelector('#setup').value='';document.querySelector('#price').value='';filter()}
+</script>
+</body></html>
