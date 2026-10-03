@@ -13,6 +13,18 @@ h1{margin:0;font-size:28px} .sub{opacity:.88;margin-top:6px;font-size:14px}
 .updated{background:#ffffff20;border:1px solid #ffffff35;border-radius:12px;padding:10px 13px;font-size:12px;white-space:nowrap}
 .toolbar{background:white;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:108px;z-index:4}
 .controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center} input,select,button{border:1px solid #d6d9e0;border-radius:10px;padding:10px 12px;background:white;color:var(--ink);font:inherit} input{min-width:220px;flex:1} button{cursor:pointer} button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.quick{display:flex;gap:7px;flex-wrap:wrap;width:100%;margin-top:2px}
+.quick button{font-size:12px;padding:8px 10px;background:#f8fafc}
+.quick button.active{background:#e8f0ff;border-color:#9bbcff;color:#174ea6;font-weight:800}
+.sortbox{min-width:180px}
+.pricegap{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:3px 0 8px;font-size:12px}
+.gap.goodgap{color:#087443;background:#ecfdf3;border:1px solid #bbf7d0}
+.gap.badgap{color:#9a3412;background:#fff7ed;border:1px solid #fed7aa}
+.gap{padding:5px 8px;border-radius:7px;font-weight:800}
+.verified{font-size:11px;color:#667085;margin-top:4px}
+.countbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 0 12px;color:#667085;font-size:12px}
+.countbar b{color:#151a2d}
+@media(max-width:700px){.sortbox{width:100%;min-width:0}.quick{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}.quick button{white-space:nowrap}.countbar{align-items:flex-start;flex-direction:column}}
 main{padding:22px 18px 50px} .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 .stat{background:white;border:1px solid var(--line);border-radius:14px;padding:15px} .stat b{display:block;font-size:22px} .stat span{font-size:12px;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
@@ -41,15 +53,23 @@ footer{max-width:1280px;margin:0 auto;padding:0 18px 35px;color:#667085;font-siz
 <select id="brand"><option value="">All brands</option><option>Motorola</option><option>boAt</option><option>GOVO</option><option>Mivi</option><option>Philips</option><option>Zebronics</option><option>Sony</option></select>
 <select id="setup"><option value="">All setups</option><option>2.1</option><option>5.1</option></select>
 <select id="price"><option value="">Any price</option><option value="6500">≤ ₹6,500</option><option value="5500">≤ ₹5,500</option><option value="4500">≤ ₹4,500</option></select>
+<select id="sort" class="sortbox"><option value="radar">Radar order</option><option value="price">Lowest price</option><option value="gap">Closest to target</option><option value="rating">Highest rating</option></select>
 <button class="primary" onclick="resetFilters()">Reset</button>
+<div class="quick" id="quick">
+<button data-quick="target">🎯 At / under target</button>
+<button data-quick="budget">💸 ≤ ₹6,500</button>
+<button data-quick="51">🎬 5.1 only</button>
+<button data-quick="all" class="active">📡 All radar</button>
+</div>
 </div></div>
 <main class="wrap">
 <div class="summary">
-<div class="stat"><b>13</b><span>serious candidates</span></div>
+<div class="stat"><b id="countStat">13</b><span>serious candidates</span></div>
 <div class="stat"><b>₹6,500</b><span>primary ceiling</span></div>
-<div class="stat"><b>₹4,299</b><span>lowest active tracked price</span></div>
-<div class="stat"><b>3</b><span>sale-sniper brands: Sony / Samsung / JBL</span></div>
+<div class="stat"><b id="lowStat">₹4,299</b><span>lowest tracked price</span></div>
+<div class="stat"><b id="targetStat">—</b><span>at / under target</span></div>
 </div>
+<div class="countbar"><span id="resultCount"><b>13</b> products shown</span><span>💡 Target gap is calculated from the stored research price.</span></div>
 <div class="note"><b>⚡ Live-price limitation:</b> this dashboard stores the latest verified research and links directly to retailer listings. Retailers do not expose a dependable public live-price API to this page, so the <b>“Check live listing”</b> button is the source of truth for the current checkout price. I can refresh the dashboard data and replace this file when the radar is updated.</div>
 <section class="grid" id="grid">
     <article class="card" data-brand="Motorola" data-setup="2.1" data-price="4299">
@@ -266,14 +286,102 @@ footer{max-width:1280px;margin:0 auto;padding:0 18px 35px;color:#667085;font-siz
 </footer>
 <script>
 const cards=[...document.querySelectorAll('.card')];
-function filter(){
- const q=document.querySelector('#search').value.toLowerCase(), b=document.querySelector('#brand').value, s=document.querySelector('#setup').value, p=Number(document.querySelector('#price').value||999999);
+const grid=document.querySelector('#grid');
+const refreshDate='3 Oct 2026';
+let quickMode='all';
+
+function num(s){return Number(String(s).replace(/[^0-9.]/g,''))||0}
+function prepareCards(){
  cards.forEach(c=>{
-   const text=c.innerText.toLowerCase(), ok=(!q||text.includes(q))&&(!b||c.dataset.brand===b)&&(!s||c.dataset.setup===s)&&Number(c.dataset.price)<=p;
-   c.style.display=ok?'flex':'none';
+   const price=num(c.dataset.price);
+   const target=num(c.querySelector('.target')?.innerText);
+   const rating=num(c.querySelector('.rating b')?.innerText);
+   c.dataset.target=target;
+   c.dataset.rating=rating;
+
+   const gap=target-price;
+   const pct=target ? Math.abs(gap/target*100) : 0;
+   const gapEl=document.createElement('div');
+   gapEl.className='pricegap';
+   gapEl.innerHTML=gap>=0
+     ? '<span class="gap goodgap">🟢 ₹'+Math.round(gap).toLocaleString('en-IN')+' under target</span><span>'+pct.toFixed(1)+'% below</span>'
+     : '<span class="gap badgap">🟠 ₹'+Math.round(-gap).toLocaleString('en-IN')+' above target</span><span>'+pct.toFixed(1)+'% above</span>';
+   c.querySelector('.target').insertAdjacentElement('afterend',gapEl);
+
+   const v=document.createElement('div');
+   v.className='verified';
+   v.textContent='✓ Research price verified '+refreshDate+' • checkout price may differ';
+   c.querySelector('.body').insertBefore(v,c.querySelector('.meta'));
  });
 }
-document.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',filter));
-function resetFilters(){document.querySelector('#search').value='';document.querySelector('#brand').value='';document.querySelector('#setup').value='';document.querySelector('#price').value='';filter()}
+
+function sortCards(){
+ const mode=document.querySelector('#sort').value;
+ const sorted=[...cards].sort((a,b)=>{
+   if(mode==='price') return num(a.dataset.price)-num(b.dataset.price);
+   if(mode==='rating') return num(b.dataset.rating)-num(a.dataset.rating);
+   if(mode==='gap'){
+     const ga=num(a.dataset.target)-num(a.dataset.price), gb=num(b.dataset.target)-num(b.dataset.price);
+     return (ga>=0?0:1)-(gb>=0?0:1) || Math.abs(ga)-Math.abs(gb);
+   }
+   return num(a.querySelector('.rank')?.innerText)-num(b.querySelector('.rank')?.innerText);
+ });
+ sorted.forEach(c=>grid.appendChild(c));
+}
+
+function filter(){
+ const q=document.querySelector('#search').value.toLowerCase();
+ const b=document.querySelector('#brand').value;
+ const s=document.querySelector('#setup').value;
+ const p=Number(document.querySelector('#price').value||999999);
+ let shown=0;
+
+ cards.forEach(c=>{
+   const text=c.innerText.toLowerCase();
+   const price=num(c.dataset.price);
+   const target=num(c.dataset.target);
+   const quickOk=quickMode==='all' ||
+     (quickMode==='target'&&price<=target) ||
+     (quickMode==='budget'&&price<=6500) ||
+     (quickMode==='51'&&c.dataset.setup==='5.1');
+   const ok=(!q||text.includes(q))&&(!b||c.dataset.brand===b)&&(!s||c.dataset.setup===s)&&price<=p&&quickOk;
+   c.style.display=ok?'flex':'none';
+   if(ok) shown++;
+ });
+ document.querySelector('#resultCount').innerHTML='<b>'+shown+'</b> product'+(shown===1?'':'s')+' shown';
+}
+
+function updateSummary(){
+ const prices=cards.map(c=>num(c.dataset.price));
+ const under=cards.filter(c=>num(c.dataset.price)<=num(c.dataset.target)).length;
+ document.querySelector('#countStat').textContent=cards.length;
+ document.querySelector('#lowStat').textContent='₹'+Math.min(...prices).toLocaleString('en-IN');
+ document.querySelector('#targetStat').textContent=under;
+}
+
+document.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',()=>{sortCards();filter()}));
+document.querySelectorAll('#quick button').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('#quick button').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+ quickMode=btn.dataset.quick;
+ filter();
+}));
+
+function resetFilters(){
+ document.querySelector('#search').value='';
+ document.querySelector('#brand').value='';
+ document.querySelector('#setup').value='';
+ document.querySelector('#price').value='';
+ document.querySelector('#sort').value='radar';
+ quickMode='all';
+ document.querySelectorAll('#quick button').forEach(b=>b.classList.toggle('active',b.dataset.quick==='all'));
+ sortCards();
+ filter();
+}
+
+prepareCards();
+updateSummary();
+sortCards();
+filter();
 </script>
 </body></html>
